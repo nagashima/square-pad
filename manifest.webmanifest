@@ -1,7 +1,7 @@
 {
-  "name": "Square",
+  "name": "Square Pad",
   "short_name": "Square",
-  "description": "画像を長辺=正方形・白パディングで Instagram 用に整形する PWA",
+  "description": "画像を長辺=正方形・指定色パディングで Instagram 用に整形する PWA",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
