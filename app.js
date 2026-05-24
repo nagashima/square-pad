@@ -15,6 +15,7 @@ const els = {
   share: document.getElementById('share'),
   status: document.getElementById('status'),
   toast: document.getElementById('toast'),
+  install: document.getElementById('install'),
   segItems: document.querySelectorAll('.seg-item'),
 };
 
@@ -69,6 +70,27 @@ els.segItems.forEach((btn) => {
     els.segItems.forEach((b) => b.setAttribute('aria-checked', b === btn ? 'true' : 'false'));
     render();
   });
+});
+
+// PWA インストールプロモート
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  els.install.hidden = false;
+});
+els.install.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  els.install.disabled = true;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  els.install.disabled = false;
+  els.install.hidden = true;
+});
+window.addEventListener('appinstalled', () => {
+  els.install.hidden = true;
+  deferredInstallPrompt = null;
 });
 
 // Share Target 受信: 起動時に Cache から取り出して自動ロード

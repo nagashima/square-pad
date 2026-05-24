@@ -54,10 +54,44 @@
     gap: 16px;
   }
   h1 {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 600;
     margin: 0;
     text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .header {
+    position: relative;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .install-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .install-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .install-btn[hidden] {
+    display: none;
   }
   .picker {
     display: flex;
@@ -249,7 +283,17 @@
 </head>
 <body>
 <main>
-  <h1>Square Pad</h1>
+  <div class="header">
+    <h1>Square Pad</h1>
+    <button id="install" class="install-btn" hidden aria-label="アプリとしてインストール">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="16"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      インストール
+    </button>
+  </div>
 
   <div class="picker">
     <label for="file">
@@ -290,9 +334,11 @@
     </button>
     <button id="share" disabled aria-label="共有">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-        <polyline points="16 6 12 2 8 6"/>
-        <line x1="12" y1="2" x2="12" y2="15"/>
+        <circle cx="18" cy="5" r="3"/>
+        <circle cx="6" cy="12" r="3"/>
+        <circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
       </svg>
       共有
     </button>
