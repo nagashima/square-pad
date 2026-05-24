@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Square</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #888;
+    --border: #ddd;
+    --surface: #f5f5f5;
+    --accent: #1a1a1a;
+    --accent-fg: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --fg: #f0f0f0;
+      --muted: #aaa;
+      --border: #555;
+      --surface: #2a2a2a;
+      --accent: #f0f0f0;
+      --accent-fg: #1a1a1a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    min-height: 100vh;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  main {
+    flex: 1;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+  }
+  .picker {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .picker label {
+    display: block;
+    padding: 24px 16px;
+    background: var(--surface);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    text-align: center;
+    color: var(--fg);
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .picker label.drag-over {
+    border-color: var(--accent);
+    border-style: solid;
+    background: var(--bg);
+  }
+  .picker label small {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .picker input[type=file] {
+    display: none;
+  }
+  .preview {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview canvas {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+  .preview .placeholder {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 4px;
+    font-size: 14px;
+  }
+  .options input[type=checkbox] {
+    width: 18px;
+    height: 18px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 4px;
+    font-size: 14px;
+  }
+  .row-label {
+    flex: 0 0 auto;
+    color: var(--muted);
+  }
+  .seg {
+    flex: 1;
+    display: flex;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .seg-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 0;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--fg);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .seg-item[aria-checked="true"] {
+    background: var(--bg);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+  .seg-item:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .options:has(input:disabled) {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .seg-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    flex: 0 0 auto;
+  }
+  .seg-swatch-white { background: #ffffff; }
+  .seg-swatch-black { background: #000000; }
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .actions button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .actions button svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+  .status {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    min-height: 1.2em;
+  }
+  .info {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    min-height: 1.2em;
+  }
+  .toast {
+    position: fixed;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    padding: 12px 24px;
+    background: rgba(20,20,20,0.92);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+    padding: 8px 16px 16px;
+  }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Square</h1>
+
+  <div class="picker">
+    <label for="file">
+      タップして画像を選択<br>
+      <small>JPEG / PNG / WebP</small>
+    </label>
+    <input id="file" type="file" accept="image/jpeg,image/png,image/webp">
+  </div>
+
+  <div class="preview" id="preview">
+    <span class="placeholder">プレビュー</span>
+  </div>
+
+  <div class="info" id="info"></div>
+
+  <div class="seg" role="radiogroup" aria-label="余白の色">
+    <button type="button" class="seg-item" role="radio" aria-checked="true" data-color="#ffffff" disabled>
+      <span class="seg-swatch seg-swatch-white"></span>白
+    </button>
+    <button type="button" class="seg-item" role="radio" aria-checked="false" data-color="#000000" disabled>
+      <span class="seg-swatch seg-swatch-black"></span>黒
+    </button>
+  </div>
+
+  <label class="options">
+    <input type="checkbox" id="insta" checked disabled>
+    1440 にリサイズ（Instagram 用）
+  </label>
+
+  <div class="actions">
+    <button id="save" disabled aria-label="保存">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      保存
+    </button>
+    <button id="share" disabled aria-label="共有">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+        <polyline points="16 6 12 2 8 6"/>
+        <line x1="12" y1="2" x2="12" y2="15"/>
+      </svg>
+      共有
+    </button>
+  </div>
+
+  <div class="status" id="status"></div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer>
+  端末内処理 / 画像はサーバーに送信されません
+</footer>
+
+<script src="./app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => {
+        console.warn('SW登録失敗:', err);
+      });
+    });
+  }
+</script>
+</body>
+</html>
