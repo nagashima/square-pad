@@ -44,14 +44,13 @@
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
   main {
-    flex: 1;
     max-width: 600px;
     width: 100%;
     margin: 0 auto;
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
   h1 {
     font-size: 22px;
@@ -93,6 +92,19 @@
   .install-btn[hidden] {
     display: none;
   }
+  @media (max-width: 480px) {
+    .install-btn {
+      padding: 7px;
+      gap: 0;
+    }
+    .install-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    .install-btn .install-text {
+      display: none;
+    }
+  }
   .picker {
     display: flex;
     flex-direction: column;
@@ -100,7 +112,7 @@
   }
   .picker label {
     display: block;
-    padding: 24px 16px;
+    padding: 14px 16px;
     background: var(--surface);
     border: 2px dashed var(--border);
     border-radius: 12px;
@@ -242,15 +254,15 @@
     text-align: center;
     color: var(--muted);
     font-size: 13px;
-    min-height: 1.2em;
   }
+  .status:empty { display: none; }
   .info {
     text-align: center;
     color: var(--muted);
     font-size: 12px;
     font-variant-numeric: tabular-nums;
-    min-height: 1.2em;
   }
+  .info:empty { display: none; }
   .toast {
     position: fixed;
     bottom: calc(24px + env(safe-area-inset-bottom));
@@ -276,7 +288,7 @@
     text-align: center;
     color: var(--muted);
     font-size: 11px;
-    padding: 8px 16px 16px;
+    padding: 0 16px 16px;
   }
   footer a { color: var(--muted); }
 </style>
@@ -291,7 +303,7 @@
         <line x1="12" y1="8" x2="12" y2="16"/>
         <line x1="8" y1="12" x2="16" y2="12"/>
       </svg>
-      インストール
+      <span class="install-text">インストール</span>
     </button>
   </div>
 
