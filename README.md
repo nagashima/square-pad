@@ -1,7 +1,6 @@
 # Square Pad
 
 画像の長辺を一辺とする正方形にし、短辺方向を指定色でパディングする PWA。
-Instagram への正方形投稿用に、Android 単体でワークフローを完結させるために作成。
 
 **公開 URL**: https://square-pad.pages.dev/
 
